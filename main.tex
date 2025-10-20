@@ -155,48 +155,48 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 \chapter{BANCO DE DADOS CONCEITUAL/LÓGICO}
 
 	A descrição do BD KJCF\&Cia, trabalhado durante todo o documento, é apresentado na Seção \ref{sec:DescricaoBD}. A modelagem por meio do MER é dada na Seção \ref{sec:mer}. A composição do restante do documento é descrita na Seção \ref{sec:EstruturaTrabalho}.
-	
+
     \section{Descrição do Banco de Dados}\label{sec:DescricaoBD}
 	O BD “KJCF\&Cia” corresponde à modelagem de um processo de banco de dados para uma empresa de materiais de construção, que trabalha desde produtos básicos para obras, ferramentas e utilidades em geral até móveis. Além disso, a empresa oferece serviços adicionais como entrega e montagem para seus clientes. Por se tratar de uma loja situada em uma cidade pequena, as entregas são realizadas apenas dentro da cidade e nas cidades vizinhas.
-	
+
 	As principais informações a serem armazenadas são descritas a seguir:
 	\begin{itemize}
 	\item Clientes: Cadastro dos clientes que fazem compras na loja.
-	
+
 	\item Cargos: Responsável por armazenar os cargos dos funcionários.
-	
+
 	\item Funcionários: Cadastro dos funcionários da empresa com seus dados.
-	
+
 	\item Categorias: Organização utilizada para separar os produtos por categorias.
-	
+
 	\item Fornecedores: Cadastro dos fornecedores, armazenando suas informações.
-	
+
 	\item Produtos: Cadastro dos produtos da empresa, com suas informações detalhadas.
-	
+
 	\item Estoque: Controle do estoque, registrando os produtos disponíveis em loja.
-	
+
 	\item Compras: Controle das compras realizadas junto aos fornecedores.
-	
+
 	\item Vendas: Registro das vendas realizadas, vinculando clientes e funcionários.
-	
+
 	\item Cidade: Cadastro das cidades relacionadas aos endereços dos clientes.
-	
+
 	\item Bairro: Cadastro dos bairros, vinculados a uma cidade.
-	
+
 	\item Endereço: Armazena o endereço completo dos clientes (rua, número, complemento, bairro e cidade).
-	
+
 	\item Agendamento de Montagem: Controle dos agendamentos de montagens a serem realizadas em produtos vendidos.
-	
+
 	\item Entrega: Controle das entregas vinculadas às vendas, com data e status.
-	
+
 	\item Pagamento Cliente: Registro dos pagamentos efetuados pelos clientes, incluindo forma e status.
-	
+
 	\item Produto Venda: Registro dos itens vendidos em cada venda (produto, quantidade e valor).
-	
+
 	\item Receita Extra: Registro de receitas adicionais recebidas fora do processo de vendas.
 \end{itemize}
 	Algumas regras são necessárias para que as restrições de integridade do BD sejam mantidas. As principais regras são descritas a abaixo, destacando-se que, ao modelar, algumas são inseridas devido à normalização do BD.
-	
+
 	\begin{itemize}
 		\item Regras Sobre os Produtos:
 			\begin{itemize}
@@ -224,10 +224,10 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 				\item Deve-se evitar categorias repetidas ou muito semelhantes.
 			\end{itemize}
 	\end{itemize}
-    
+
     \section{Modelo Entidade-Relacionamento}\label{sec:mer}
      O MER composto por 17 tabelas é apresentado na Figura~\ref{fig:mer}.
-    
+
     \begin{figure}[H]
       \centering
       % Ajuste o caminho da imagem conforme sua árvore de pastas
@@ -239,27 +239,27 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
     \section{Estrutura do Trabalho}\label{sec:EstruturaTrabalho}
     Após a definição conceitual/lógica, o banco deve ser implementado fisicamente em MySQL.
     Essa implementação, juntamente com a primeira carga de dados, é descrita no Capítulo~\ref{chap:fisico}.
-    
+
     Com o banco implementado fisicamente, consultas nos dados podem ser realizadas por meio de \texttt{SQL}.
     O Capítulo apresenta inúmeras consultas, cada uma com uma característica diferente.
-    
+
     Algumas rotinas podem ser definidas para automatizar tarefas e, em alguns casos, melhorar a performance:
     visões, funções, procedimentos, gatilhos e eventos. Esses recursos são tratados no Capítulo~\ref{chap:otimizacao}.
-    
+
     O acesso aos dados deve ser controlado por segurança. Usuários distintos têm permissões distintas; isso é tratado no Capítulo~\ref{chap:acesso}.
-    
+
     Para garantir propriedades ACID, operações de alteração devem ser realizadas em bloco de transação (Capítulo~\ref{chap:transacoes}).
-    
+
     Por fim, falhas podem ocorrer; tolerâncias e tratamentos são descritos no Capítulo~\ref{chap:falhas}.
-    
+
     \chapter{BANCO DE DADOS FÍSICO}\label{chap:fisico}
     A criação do ``\texttt{KJCF\&Cia}'' considerando MySQL é descrita na Seção~\ref{sec:def-fisica} por meio de DDL.
     A carga inicial é dada na Seção por meio de DML.
-    
+
     \section{Definição Física}\label{sec:def-fisica}
     Os scripts responsáveis pela criação física do schema são descritos abaixo. Todas as restrições de integridade
     (chaves candidatas, primárias e estrangeiras) são consideradas no momento da criação.
-    
+
     \begin{lstlisting}[language=SQL,caption={DDL -- Tabela \texttt{tb\_cliente}}]
 		CREATE TABLE IF NOT EXISTS `mydb`.`tb_cliente` (
 		`id_cliente` INT NOT NULL AUTO_INCREMENT,
@@ -524,7 +524,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 
     \section{Carga de Dados Iniciais}\label{sec:carga}
     Após a criação do banco, uma carga inicial é inserida por meio de DML:
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_cargo}}]
 		INSERT INTO tb_cargo (id_cargo, nome_cargo, descricao_cargo, salario_base) VALUES
 		(1,'Vendedor','Responsável pelo atendimento e vendas em loja',2000.00),
@@ -546,7 +546,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,'Gabriela Barros','33333333333','(33) 33333-3333'),
 		(5,'Pedro Cachoeira','44444444444','(44) 44444-4444');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_cidade}}]
 		INSERT INTO tb_cidade (id_cidade, nome_cidade) VALUES
 		(1,'Santa Helena'),
@@ -555,7 +555,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,'Subsede'),
 		(5,'Entre Rios');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_bairro}}]
 		INSERT INTO tb_bairro (id_bairro, nome_bairro, id_cidade) VALUES
 		(1,'Centro',1),
@@ -564,7 +564,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,'Centro',4),
 		(5,'Centro',5);
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_endereco}}]
 		INSERT INTO tb_endereco (id_endereco, id_bairro, logradouro, numero, complemento, id_cliente, prioridade) VALUES
 		(1,1,'Rua Xaxim','123',NULL,1,1),
@@ -573,14 +573,14 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,4,'Rua Argentina','213',NULL,4,1),
 		(5,4,'Rua Argentina','312',NULL,5,1);
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_categoria}}]
 		INSERT INTO tb_categoria (id_categoria, nome_categoria, descricao_categoria) VALUES
 		(1,'Ferramentas','Makita, martelo, pá...'),
 		(2,'Mobilia','Guarda-roupa, mesa, bancada...'),
 		(3,'Materiais','Areia, pedra, prego...');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_fornecedor}}]
 		INSERT INTO tb_fornecedor (id_fornecedor, nome_fornecedor, cpf_cnpj_fornecedor) VALUES
 		(1,'Kaique Madeiras','22222222222222'),
@@ -589,7 +589,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,'Rafael Pregos','55555555555555'),
 		(5,'Raul Rolamentos','66666666666666');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_produto}}]
 		INSERT INTO tb_produto (id_produto, nome_produto, descricao_produto, requer_montagem, id_categoria) VALUES
 		(1,'Makita 5007N','Serra Circular 7-1/4 1800W',0,1),
@@ -598,7 +598,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,'Pedra Brita','Essa é da boa',0,3),
 		(5,'Areia Média','Funciona bem',0,3);
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_compra}}]
 		INSERT INTO tb_compra (id_compra, id_fornecedor, data) VALUES
 		(1,1,'2025-08-10'),
@@ -606,7 +606,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(3,1,'2025-08-12'),
 		(4,1,'2025-08-13');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_estoque}}]
 		INSERT INTO tb_estoque (id_estoque, id_compra, id_produto, quantidade, preco_estoque) VALUES
 		(1,1,1, 50, 793.78),
@@ -615,7 +615,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(4,3,4,200,  35.00),
 		(5,4,5,180,  30.00);
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_venda}}]
 		INSERT INTO tb_venda (id_venda, id_cliente, id_funcionario, data, status, observacao_venda) VALUES
 		(1,1,2,'2025-08-15','concluida','Cara saiu feliz'),
@@ -623,7 +623,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(3,3,4,'2025-08-17','concluida','Sucesso'),
 		(4,4,4,'2025-08-18','cancelada','Cartão não passou');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_produto\_venda}}]
 		INSERT INTO tb_produto_venda (id_venda_itens, id_venda, id_estoque, quantidade, valor) VALUES
 		(1,1,1,189,793.78),
@@ -631,7 +631,7 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(3,3,1,  1,793.78),
 		(4,4,1,  1,793.78);
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_pagamento\_cliente}}]
 		INSERT INTO tb_pagamento_cliente (id_pagamento_cliente, id_venda, data_pagamento, forma_pagamento, status_pagamento) VALUES
 		(1,1,'2025-08-15','pix','pago'),
@@ -639,21 +639,21 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 		(3,3,'2025-08-17','boleto','pago'),
 		(4,4,'2025-08-18','cartao_credito','cancelado');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_entrega}}]
 		INSERT INTO tb_entrega (id_entrega, id_venda, id_endereco, data_entrega, status_entrega) VALUES
 		(1,1,1,'2025-08-16','entregue'),
 		(2,2,2,'2025-08-20','pendente'),
 		(3,3,3,'2025-08-18','entregue');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_agendamento\_montagem}}]
 		INSERT INTO tb_agendamento_montagem (id_agendamento_montagem, id_venda_itens, id_funcionario, id_endereco, data, status_montagem, observacao) VALUES
 		(1,1,2,1,'2025-08-16','realizado','Cliente chato'),
 		(2,2,2,2,'2025-08-21','pendente','No aguardo da chegada dos materiais'),
 		(3,3,2,3,'2025-08-19','realizado','Sucesso');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={DML -- Tabela \texttt{tb\_receita\_extra}}]
 		INSERT INTO tb_receita_extra (id_receita, descricao_receita, valor, data_recebimento, id_funcionario) VALUES
 		(1,'Rapaz merece',350.00,'2025-08-19',2),
@@ -665,150 +665,278 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 \chapter{CONSULTAS DE DADOS NO BD}\label{chap:consultas}
 A linguagem SQL permite diferentes recursos para recuperar informações.
 As seções abaixo listam os tipos de consultas (exemplos a completar).
-    
+
     \section{Restrições de Linha}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela\texttt{tb\_cliente}}]
         SELECT * FROM tb_cliente
         WHERE cpf_cnpj_cliente IN ('00000000000','11111111111');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_cargo}}]
         SELECT * FROM tb_cargo
         WHERE salario_base > 3000.00;
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_funcionario}}]
         SELECT * FROM tb_funcionario
         WHERE id_cargo = 1;
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_venda}}]
         SELECT * FROM tb_venda
         WHERE status = 'concluida'
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_cidade}}]
         SELECT * FROM tb_cidade
         WHERE nome_cidade IN ('Santa Helena','Medianeira');
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_bairro}}]
         SELECT * FROM tb_bairro
         WHERE nome_bairro = 'Centro'
         AND id_cidade IN (4,5);
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_endereco}}]
         SELECT * FROM tb_endereco
         WHERE id_cliente IN (1,5)
         AND complemento IS NULL;
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_agendamento\_montagem}}]
         SELECT * FROM tb_agendamento_montagem
         WHERE status_montagem = 'realizado'
         AND data >= '2025-08-19';
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_categoria}}]
         SELECT * FROM tb_categoria
         WHERE nome_categoria <> 'Ferramentas';
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_fornecedor}}]
         SELECT * FROM tb_fornecedor
         WHERE cpf_cnpj_fornecedor LIKE '33%';
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_compra}}]
         SELECT * FROM tb_compra
         WHERE id_fornecedor = 1
         AND data >= '2025-08-12';
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_entrega}}]
         SELECT * FROM tb_entrega
         WHERE status_entrega = 'pendente'
         OR data_entrega > '2025-08-17';
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_produto}}]
         SELECT * FROM tb_produto
         WHERE id_categoria = 3
         AND descricao_produto IS NOT NULL;
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_estoque}}]
         SELECT * FROM tb_estoque
         WHERE quantidade >= 100
         AND preco_estoque <= 120.00;
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_pagamento\_cliente}}]
         SELECT * FROM tb_pagamento_cliente
         WHERE forma_pagamento IN ('pix','boleto')
         AND status_pagamento = 'pago';
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_produto\_venda}}]
         SELECT * FROM tb_produto_venda
         WHERE id_produto = 1
         AND quantidade >= 100;
     \end{lstlisting}
-    
+
     \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_receita\_extra}}]
         SELECT * FROM tb_receita_extra
         WHERE data_recebimento BETWEEN '2025-08-19' AND '2025-08-20'
         AND valor >= 150.00;
     \end{lstlisting}
-    
+
     \section{Funções de Linha}
     \dots
-    
+
     \section{Junções de Tabelas}
     \dots
-    
-    \section{Operadores de Conjunto}
-    \dots
-    
-    \section{Sub-Consultas}
-    \dots
-    
+
+        \section{Operadores de Conjunto}
+
+    Consultas que combinam conjuntos de linhas podem utilizar \texttt{UNION} (remoção de duplicatas) e \texttt{UNION ALL} (mantém duplicatas). Em MySQL, operações como \texttt{INTERSECT} e \texttt{EXCEPT} podem ser obtidas por equivalentes com \texttt{JOIN}, \texttt{EXISTS} ou \texttt{NOT EXISTS}.
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- UNION: nomes de clientes e fornecedores sem duplicatas}]
+        SELECT nome_cliente AS nome, 'cliente' AS origem
+        FROM tb_cliente
+        UNION
+        SELECT nome_fornecedor AS nome, 'fornecedor' AS origem
+        FROM tb_fornecedor;
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- UNION ALL: contabiliza todas as ocorrências (com duplicatas)}]
+        SELECT nome_cliente AS nome
+        FROM tb_cliente
+        UNION ALL
+        SELECT nome_fornecedor AS nome
+        FROM tb_fornecedor;
+        -- Útil quando se deseja manter contagens exatas de ocorrências
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- INTERSECT (equivalente): nomes presentes em cliente e fornecedor}]
+        SELECT c.nome_cliente AS nome
+        FROM tb_cliente c
+        WHERE EXISTS (
+            SELECT 1
+            FROM tb_fornecedor f
+            WHERE f.nome_fornecedor = c.nome_cliente
+        );
+        -- Equivalente ao INTERSECT dos nomes (quando houver coincidência literal)
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- EXCEPT (equivalente): clientes que nunca compraram}]
+        SELECT c.id_cliente, c.nome_cliente
+        FROM tb_cliente c
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM tb_venda v
+            WHERE v.id_cliente = c.id_cliente
+        );
+        -- Equivalente ao "clientes" EXCEPT "clientes com venda"
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- UNION: cidades e bairros (rótulo por tipo)}]
+        SELECT nome_cidade AS nome, 'cidade' AS tipo
+        FROM tb_cidade
+        UNION
+        SELECT nome_bairro AS nome, 'bairro' AS tipo
+        FROM tb_bairro;
+    \end{lstlisting}
+
+
+        \section{Sub-Consultas}
+
+    Subconsultas podem ser escalares (retornam um único valor), de conjunto (\texttt{IN}), correlacionadas (\texttt{EXISTS}/\texttt{NOT EXISTS}) ou em \texttt{FROM} (tabelas derivadas). Abaixo, exemplos aplicados ao schema definido.
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- Subconsulta escalar: maior salário-base de cargo}]
+        SELECT nome_cargo, salario_base
+        FROM tb_cargo
+        WHERE salario_base = (
+            SELECT MAX(salario_base) FROM tb_cargo
+        );
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- IN: clientes com ao menos uma venda concluída}]
+        SELECT c.id_cliente, c.nome_cliente
+        FROM tb_cliente c
+        WHERE c.id_cliente IN (
+            SELECT v.id_cliente
+            FROM tb_venda v
+            WHERE v.status = 'concluida'
+        );
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- EXISTS (correlata): fornecedores que já tiveram compras}]
+        SELECT f.id_fornecedor, f.nome_fornecedor
+        FROM tb_fornecedor f
+        WHERE EXISTS (
+            SELECT 1
+            FROM tb_compra co
+            WHERE co.id_fornecedor = f.id_fornecedor
+        );
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- Subconsulta correlata com agregação: vendas com total > 1000}]
+        SELECT v.id_venda, v.data, v.status
+        FROM tb_venda v
+        WHERE (
+            SELECT SUM(pv.valor * pv.quantidade)
+            FROM tb_produto_venda pv
+            WHERE pv.id_venda = v.id_venda
+        ) > 1000.00;
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela derivada (FROM): top categorias por itens vendidos}]
+        SELECT d.id_categoria, d.nome_categoria, d.qtd_itens
+        FROM (
+            SELECT pr.id_categoria,
+                   ca.nome_categoria,
+                   SUM(pv.quantidade) AS qtd_itens
+            FROM tb_produto_venda pv
+            JOIN tb_estoque es  ON es.id_estoque  = pv.id_estoque
+            JOIN tb_produto pr  ON pr.id_produto  = es.id_produto
+            JOIN tb_categoria ca ON ca.id_categoria = pr.id_categoria
+            GROUP BY pr.id_categoria, ca.nome_categoria
+        ) AS d
+        ORDER BY d.qtd_itens DESC
+        LIMIT 5;
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- NOT EXISTS (correlata): produtos que requerem montagem e nunca foram vendidos}]
+        SELECT p.id_produto, p.nome_produto
+        FROM tb_produto p
+        WHERE p.requer_montagem = 1
+          AND NOT EXISTS (
+              SELECT 1
+              FROM tb_estoque e
+              JOIN tb_produto_venda pv ON pv.id_estoque = e.id_estoque
+              WHERE e.id_produto = p.id_produto
+          );
+    \end{lstlisting}
+
+    \begin{lstlisting}[language=SQL,caption={SELECT -- Subconsulta escalar em projeção: total (R\$) por venda}]
+        SELECT v.id_venda,
+               v.status,
+               (
+                 SELECT SUM(pv.valor * pv.quantidade)
+                 FROM tb_produto_venda pv
+                 WHERE pv.id_venda = v.id_venda
+               ) AS total_venda
+        FROM tb_venda v;
+    \end{lstlisting}
+
+
     \section{Agregação e Funções de Agrupamento}
     \dots
-    
+
     \section{\texttt{SELECT} nos Comandos}
     \dots
 
 \chapter{ROTINAS DE OTIMIZAÇÃO NO BD}\label{chap:otimizacao}
     \section{Visões}
     \dots
-    
+
     \section{Funções}
     \dots
-    
+
     \section{Procedimentos}
     \dots
-    
+
     \section{Gatilhos}
     \dots
-    
+
     \section{Eventos}
     \dots
 
 \chapter{CONTROLE DE ACESSO}\label{chap:acesso}
 O controle de acesso é dado por \texttt{GRANT} e \texttt{REVOKE}. As subseções a seguir seguem o PDF.
-    
+
     \section{Criar Usuários}
     \dots
-    
+
     \section{Atribuir Permissões}
     \dots
-    
+
     \section{Revogar Permissões}
     \dots
-    
+
 \chapter{TRANSAÇÕES NO BD}\label{chap:transacoes}
 Defina blocos transacionais atômicos para preservar ACID.
 \dots
@@ -818,7 +946,7 @@ Durante a execução de qualquer software, falhas podem ocorrer; tolerâncias e 
 
     \section{Tolerâncias à Falhas}
     \dots
-    
+
     \section{Tratamento à Falhas}
     \dots
 
