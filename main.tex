@@ -1012,11 +1012,74 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
     \end{lstlisting}
 
 
-    \section{Agregação e Funções de Agrupamento}
-    \dots
+\section{Agregação e Funções de Agrupamento}
+	Funções de agregação como \texttt{COUNT}, \texttt{SUM}, \texttt{AVG}, \texttt{MAX} e \texttt{MIN} são usadas para resumir dados.
+	O \texttt{GROUP BY} agrupa linhas para que a função de agregação seja aplicada a cada grupo, e o \texttt{HAVING} filtra os grupos.
 
-    \section{\texttt{SELECT} nos Comandos}
-    \dots
+	\begin{lstlisting}[language=SQL,caption={SELECT -- GROUP BY + COUNT: Contagem de funcionários por cargo}]
+		SELECT
+			   c.nome_cargo,
+			   COUNT(f.id_funcionario) AS total_funcionarios
+		FROM tb_funcionario f
+		INNER JOIN tb_cargo c ON f.id_cargo = c.id_cargo
+		GROUP BY c.id_cargo, c.nome_cargo;
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=SQL,caption={SELECT -- GROUP BY + SUM: Valor total em estoque por produto}]
+		SELECT
+			   p.nome_produto,
+			   SUM(e.quantidade * e.preco_estoque) AS valor_total_estoque
+		FROM tb_estoque e
+		INNER JOIN tb_produto p ON e.id_produto = p.id_produto
+		GROUP BY p.id_produto, p.nome_produto;
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=SQL,caption={SELECT -- GROUP BY + HAVING: Clientes com total gasto \textgreater{} R\$ 1000}]
+		SELECT
+			   c.nome_cliente,
+			   SUM(pv.quantidade * pv.valor) AS total_gasto
+		FROM tb_cliente c
+		JOIN tb_venda v ON c.id_cliente = v.id_cliente
+		JOIN tb_produto_venda pv ON v.id_venda = pv.id_venda
+		GROUP BY c.id_cliente, c.nome_cliente
+		HAVING total_gasto > 1000.00;
+	\end{lstlisting}
+
+
+\section{\texttt{SELECT} nos Comandos}
+	A instrução \texttt{SELECT} pode ser aninhada dentro de comandos de Data Manipulation Language (DML)
+	-- \texttt{INSERT}, \texttt{UPDATE} e \texttt{DELETE} -- para fornecer valores ou critérios de forma dinâmica.
+
+	\begin{lstlisting}[language=SQL,caption={INSERT ... SELECT -- Conceder bônus (receita extra) para todos os Vendedores}]
+
+		INSERT INTO tb_receita_extra (descricao_receita, valor, data_recebimento, id_funcionario)
+		SELECT
+			'Bônus de desempenho geral',
+			25.00,
+			CURDATE(),
+			id_funcionario
+		FROM tb_funcionario
+		WHERE id_cargo = 1;
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=SQL,caption={UPDATE -- Cancelar todas as vendas de um cliente específico}]
+		UPDATE tb_venda
+		SET status = 'cancelada'
+		WHERE id_cliente = (
+			SELECT id_cliente
+			FROM tb_cliente
+			WHERE nome_cliente = 'Gabriela Barros'
+		);
+	\end{lstlisting}
+
+	\begin{lstlisting}[language=SQL,caption={DELETE -- Remover todos os pagamentos associados a vendas canceladas}]
+		DELETE FROM tb_pagamento_cliente
+		WHERE id_venda IN (
+			SELECT id_venda
+			FROM tb_venda
+			WHERE status = 'cancelada'
+		);
+	\end{lstlisting}
 
 \chapter{ROTINAS DE OTIMIZAÇÃO NO BD}\label{chap:otimizacao}
     \section{Visões}
