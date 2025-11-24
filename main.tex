@@ -1089,7 +1089,86 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
     \dots
 
     \section{Procedimentos}
-    \dots
+    Procedimentos Armazenados (\textit{Stored Procedures}) são conjuntos de comandos SQL pré-compilados e armazenados no servidor de banco de dados. Eles permitem encapsular lógica de negócios, reutilizar código, melhorar a segurança e, em muitos casos, aumentar o desempenho ao reduzir o tráfego de rede.
+
+    Abaixo são apresentados exemplos de procedimentos criados para automatizar tarefas comuns no sistema KJCF\&Cia.
+
+    \begin{lstlisting}[language=SQL,caption={Procedure -- Atualizar preço no estoque por percentual}]
+        DELIMITER $$
+
+        CREATE PROCEDURE pr_reajustar_preco_estoque (
+            IN p_id_produto INT,
+            IN p_percentual DECIMAL(5,2)
+        )
+        BEGIN
+            -- Atualiza o preco do produto no estoque baseado em um percentual
+            -- Ex: 10.0 representa um aumento de 10%
+            UPDATE tb_estoque
+            SET preco_estoque = preco_estoque * (1 + (p_percentual / 100))
+            WHERE id_produto = p_id_produto;
+        END $$
+
+        DELIMITER ;
+    \end{lstlisting}
+
+    Para chamar o procedimento acima e aplicar um aumento de 10\% no produto de ID 1:
+    \begin{lstlisting}[language=SQL,caption={Exemplo de chamada -- \texttt{pr\_reajustar\_preco\_estoque}}]
+        CALL pr_reajustar_preco_estoque(1, 10.00);
+    \end{lstlisting}
+
+    Outro uso comum é a geração de relatórios encapsulados. O procedimento a seguir retorna o histórico de vendas de um cliente específico dentro de um período.
+
+    \begin{lstlisting}[language=SQL,caption={Procedure -- Histórico de compras do cliente}]
+        DELIMITER $$
+
+        CREATE PROCEDURE pr_historico_cliente (
+            IN p_id_cliente INT,
+            IN p_data_inicio DATE,
+            IN p_data_fim DATE
+        )
+        BEGIN
+            SELECT
+                v.id_venda,
+                v.data,
+                v.status,
+                SUM(pv.quantidade * pv.valor) AS valor_total
+            FROM tb_venda v
+            INNER JOIN tb_produto_venda pv ON v.id_venda = pv.id_venda
+            WHERE v.id_cliente = p_id_cliente
+              AND v.data BETWEEN p_data_inicio AND p_data_fim
+            GROUP BY v.id_venda, v.data, v.status
+            ORDER BY v.data DESC;
+        END $$
+
+        DELIMITER ;
+    \end{lstlisting}
+
+    Por fim, procedimentos podem utilizar parâmetros de saída (\texttt{OUT}) para retornar valores calculados para a aplicação ou para outros blocos SQL.
+
+    \begin{lstlisting}[language=SQL,caption={Procedure -- Calcular comissão total de funcionário (OUT)}]
+        DELIMITER $$
+
+        CREATE PROCEDURE pr_calcular_total_vendas_funcionario (
+            IN p_id_funcionario INT,
+            OUT p_total_vendido DECIMAL(10,2)
+        )
+        BEGIN
+            -- Calcula a soma total das vendas concluidas realizadas pelo funcionario
+            SELECT SUM(pv.quantidade * pv.valor)
+            INTO p_total_vendido
+            FROM tb_venda v
+            INNER JOIN tb_produto_venda pv ON v.id_venda = pv.id_venda
+            WHERE v.id_funcionario = p_id_funcionario
+              AND v.status = 'concluida';
+
+            -- Se nao houver vendas, define como 0
+            IF p_total_vendido IS NULL THEN
+                SET p_total_vendido = 0.00;
+            END IF;
+        END $$
+
+        DELIMITER ;
+    \end{lstlisting}
 
     \section{Gatilhos}
     \dots
