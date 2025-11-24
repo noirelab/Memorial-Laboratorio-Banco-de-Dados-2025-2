@@ -663,101 +663,117 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 
 
 \chapter{CONSULTAS DE DADOS NO BD}\label{chap:consultas}
-A linguagem SQL permite diferentes recursos para recuperar informações.
-As seções abaixo listam os tipos de consultas (exemplos a completar).
+    A linguagem SQL permite diferentes recursos para recuperar informações, desde filtros simples até junções complexas e subconsultas. As seções a seguir apresentam as consultas desenvolvidas para validar o banco de dados.
 
     \section{Restrições de Linha}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela\texttt{tb\_cliente}}]
+    A primeira consulta busca recuperar os dados de clientes específicos filtrando por uma lista de CPFs/CNPJs conhecidos.
+    \begin{lstlisting}[language=SQL,caption={Filtro de clientes por lista de CPF/CNPJ}]
         SELECT * FROM tb_cliente
         WHERE cpf_cnpj_cliente IN ('00000000000','11111111111');
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_cargo}}]
+    Para identificar os cargos com maior remuneração, selecionamos aqueles com salário base superior a R\$ 3.000,00.
+    \begin{lstlisting}[language=SQL,caption={Cargos com salário superior a R\$ 3.000}]
         SELECT * FROM tb_cargo
         WHERE salario_base > 3000.00;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_funcionario}}]
+    A listagem de funcionários abaixo filtra apenas aqueles que ocupam o cargo de "Vendedor" (identificado pelo ID 1).
+    \begin{lstlisting}[language=SQL,caption={Listagem de Vendedores}]
         SELECT * FROM tb_funcionario
         WHERE id_cargo = 1;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_venda}}]
+    Para relatório de fechamento, buscamos todas as vendas que já possuem o status de 'concluida'.
+    \begin{lstlisting}[language=SQL,caption={Vendas com status concluído}]
         SELECT * FROM tb_venda
-        WHERE status = 'concluida'
+        WHERE status = 'concluida';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_cidade}}]
+    A consulta a seguir filtra cidades de uma região específica (Santa Helena e Medianeira) para análise logística.
+    \begin{lstlisting}[language=SQL,caption={Filtro de Cidades da região}]
         SELECT * FROM tb_cidade
         WHERE nome_cidade IN ('Santa Helena','Medianeira');
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_bairro}}]
+    Buscamos os bairros denominados 'Centro' que pertencem especificamente às cidades de ID 4 e 5.
+    \begin{lstlisting}[language=SQL,caption={Bairros do centro em cidades específicas}]
         SELECT * FROM tb_bairro
         WHERE nome_bairro = 'Centro'
         AND id_cidade IN (4,5);
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_endereco}}]
+    Para verificar a consistência de cadastros, buscamos endereços de clientes selecionados que não possuem complemento cadastrado.
+    \begin{lstlisting}[language=SQL,caption={Endereços sem complemento de clientes específicos}]
         SELECT * FROM tb_endereco
         WHERE id_cliente IN (1,5)
         AND complemento IS NULL;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_agendamento\_montagem}}]
+    Para controle de qualidade, listamos as montagens realizadas a partir do dia 19/08/2025.
+    \begin{lstlisting}[language=SQL,caption={Montagens realizadas recentemente}]
         SELECT * FROM tb_agendamento_montagem
         WHERE status_montagem = 'realizado'
         AND data >= '2025-08-19';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_categoria}}]
+    A consulta abaixo lista todas as categorias de produtos, exceto a categoria de 'Ferramentas'.
+    \begin{lstlisting}[language=SQL,caption={Categorias exceto Ferramentas}]
         SELECT * FROM tb_categoria
         WHERE nome_categoria <> 'Ferramentas';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_fornecedor}}]
+    Utilizando o operador \texttt{LIKE}, buscamos fornecedores cujo CNPJ inicia com os dígitos '33'.
+    \begin{lstlisting}[language=SQL,caption={Busca de fornecedor por início do CNPJ}]
         SELECT * FROM tb_fornecedor
         WHERE cpf_cnpj_fornecedor LIKE '33%';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_compra}}]
+    Para auditar as aquisições, listamos as compras feitas com o Fornecedor 1 a partir de 12/08/2025.
+    \begin{lstlisting}[language=SQL,caption={Compras recentes de um fornecedor específico}]
         SELECT * FROM tb_compra
         WHERE id_fornecedor = 1
         AND data >= '2025-08-12';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_entrega}}]
+    A logística precisa monitorar entregas pendentes ou que estão agendadas para datas futuras (pós 17/08/2025).
+    \begin{lstlisting}[language=SQL,caption={Entregas pendentes ou futuras}]
         SELECT * FROM tb_entrega
         WHERE status_entrega = 'pendente'
         OR data_entrega > '2025-08-17';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_produto}}]
+    Listamos produtos da categoria 3 (Materiais) que possuem uma descrição detalhada preenchida.
+    \begin{lstlisting}[language=SQL,caption={Produtos da categoria 3 com descrição}]
         SELECT * FROM tb_produto
         WHERE id_categoria = 3
         AND descricao_produto IS NOT NULL;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_estoque}}]
+    Para gestão de inventário, buscamos lotes de estoque com grande volume (mais de 100 itens) e custo unitário baixo (até R\$ 120,00).
+    \begin{lstlisting}[language=SQL,caption={Itens de estoque de alto volume e baixo custo}]
         SELECT * FROM tb_estoque
         WHERE quantidade >= 100
         AND preco_estoque <= 120.00;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_pagamento\_cliente}}]
+    O setor financeiro necessita listar pagamentos via Pix ou Boleto que já foram efetivados ('pago').
+    \begin{lstlisting}[language=SQL,caption={Pagamentos efetivados via Pix ou Boleto}]
         SELECT * FROM tb_pagamento_cliente
         WHERE forma_pagamento IN ('pix','boleto')
         AND status_pagamento = 'pago';
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_produto\_venda}}]
+    Para análise de saída de produtos, verificamos itens de venda do produto 1 onde a quantidade vendida foi alta (>= 100).
+    \begin{lstlisting}[language=SQL,caption={Grandes saídas do Produto 1}]
         SELECT * FROM tb_produto_venda
         WHERE id_produto = 1
         AND quantidade >= 100;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela \texttt{tb\_receita\_extra}}]
+    Por fim, filtramos receitas extras de alto valor (>= 150.00) recebidas em um intervalo de datas específico.
+    \begin{lstlisting}[language=SQL,caption={Receitas extras altas no período}]
         SELECT * FROM tb_receita_extra
         WHERE data_recebimento BETWEEN '2025-08-19' AND '2025-08-20'
         AND valor >= 150.00;
@@ -765,9 +781,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
 
     \section{Funções de Linha}
 
-    % Funções que operam linha a linha (string, data, numéricas, condicionais)
-
-    \begin{lstlisting}[language=SQL,caption={SELECT -- String: maiusculização e tamanho do texto}]
+    As funções de linha permitem manipular dados no momento da projeção. Abaixo, convertemos o nome da categoria para maiúsculo e contamos seus caracteres.
+    \begin{lstlisting}[language=SQL,caption={Manipulação de Strings (UPPER e LENGTH)}]
         SELECT id_categoria,
                nome_categoria,
                UPPER(nome_categoria) AS nome_maiusculo,
@@ -775,7 +790,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         FROM tb_categoria;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- String: máscara simples de CPF (11 dígitos)}]
+    Para apresentar o CPF formatado em relatórios, utilizamos concatenação e \textit{substrings}.
+    \begin{lstlisting}[language=SQL,caption={Formatação de máscara de CPF}]
         SELECT id_cliente,
                nome_cliente,
                CONCAT(
@@ -788,7 +804,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         WHERE CHAR_LENGTH(cpf_cnpj_cliente) = 11;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- String + NULL-safe: endereço completo (COALESCE)}]
+    A função \texttt{COALESCE} é utilizada para garantir que o endereço seja exibido corretamente mesmo quando o complemento é nulo.
+    \begin{lstlisting}[language=SQL,caption={Concatenação segura de Endereço}]
         SELECT id_endereco,
                CONCAT(
                  logradouro, ', ', numero,
@@ -797,14 +814,16 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         FROM tb_endereco;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Data: formatação BR e diferença de dias}]
+    Manipulações de data são essenciais. Abaixo formatamos a data para o padrão brasileiro e calculamos a "idade" da venda em dias.
+    \begin{lstlisting}[language=SQL,caption={Formatação de Data e Diferença de Dias}]
         SELECT id_venda,
                DATE_FORMAT(data, '%d/%m/%Y') AS data_br,
                DATEDIFF(CURDATE(), data)     AS dias_desde_a_venda
         FROM tb_venda;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Numérica + condicional: total por item e classificação}]
+    Utilizamos a estrutura condicional \texttt{CASE} para classificar o valor total dos itens vendidos em faixas (alto, médio, baixo).
+    \begin{lstlisting}[language=SQL,caption={Lógica condicional com CASE}]
         SELECT id_venda_itens,
                quantidade,
                valor,
@@ -820,9 +839,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
 
     \section{Junções de Tabelas}
 
-    % Exemplos de INNER, LEFT (anti-join), junção em cadeia e self-join
-
-    \begin{lstlisting}[language=SQL,caption={SELECT -- INNER JOIN: produto e sua categoria}]
+    As junções permitem relacionar dados distribuídos. A consulta a seguir usa \texttt{INNER JOIN} para mostrar o nome da categoria ao lado do produto.
+    \begin{lstlisting}[language=SQL,caption={Junção Produto e Categoria}]
         SELECT p.id_produto,
                p.nome_produto,
                c.nome_categoria
@@ -831,7 +849,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
                 ON c.id_categoria = p.id_categoria;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- INNER JOIN em cadeia: venda com cliente e total}]
+    Para calcular o total de uma venda e saber quem comprou, realizamos junções em cadeia entre Venda, Cliente e Itens da Venda.
+    \begin{lstlisting}[language=SQL,caption={Total de Venda por Cliente}]
         SELECT v.id_venda,
                cl.nome_cliente,
                SUM(pv.quantidade * pv.valor) AS total_venda
@@ -843,7 +862,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         GROUP BY v.id_venda, cl.nome_cliente;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- LEFT JOIN: compras com (ou sem) itens de estoque}]
+    Utilizamos \texttt{LEFT JOIN} para listar todas as compras, trazendo dados do estoque quando existirem (preservando compras que ainda não deram entrada no estoque, se houver).
+    \begin{lstlisting}[language=SQL,caption={Compras e entrada no Estoque}]
         SELECT co.id_compra,
                f.nome_fornecedor,
                e.id_estoque,
@@ -856,7 +876,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         ORDER BY co.id_compra;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Anti-join (LEFT + IS NULL): cidades sem bairros}]
+    O conceito de \textit{Anti-Join} é aplicado para descobrir cidades cadastradas que ainda não possuem nenhum bairro vinculado.
+    \begin{lstlisting}[language=SQL,caption={Cidades sem bairros cadastrados}]
         SELECT ci.id_cidade,
                ci.nome_cidade
         FROM tb_cidade ci
@@ -865,7 +886,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         WHERE b.id_bairro IS NULL;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- SELF JOIN: pares de funcionários do mesmo cargo}]
+    Uma \texttt{SELF JOIN} é utilizada na tabela de funcionários para encontrar pares de colegas que possuem o mesmo cargo.
+    \begin{lstlisting}[language=SQL,caption={Pares de funcionários do mesmo cargo}]
         SELECT f1.nome_funcionario AS funcionario_1,
                f2.nome_funcionario AS funcionario_2,
                c.nome_cargo
@@ -880,9 +902,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
 
     \section{Operadores de Conjunto}
 
-    Consultas que combinam conjuntos de linhas podem utilizar \texttt{UNION} (remoção de duplicatas) e \texttt{UNION ALL} (mantém duplicatas). Em MySQL, operações como \texttt{INTERSECT} e \texttt{EXCEPT} podem ser obtidas por equivalentes com \texttt{JOIN}, \texttt{EXISTS} ou \texttt{NOT EXISTS}.
-
-    \begin{lstlisting}[language=SQL,caption={SELECT -- UNION: nomes de clientes e fornecedores sem duplicatas}]
+    O operador \texttt{UNION} é utilizado para criar uma lista única contendo nomes de clientes e fornecedores, removendo duplicatas.
+    \begin{lstlisting}[language=SQL,caption={União de Clientes e Fornecedores}]
         SELECT nome_cliente AS nome, 'cliente' AS origem
         FROM tb_cliente
         UNION
@@ -890,16 +911,17 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         FROM tb_fornecedor;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- UNION ALL: contabiliza todas as ocorrências (com duplicatas)}]
+    Diferente do anterior, o \texttt{UNION ALL} mantém registros duplicados, útil para contagens totais de entidades.
+    \begin{lstlisting}[language=SQL,caption={União total (com duplicatas)}]
         SELECT nome_cliente AS nome
         FROM tb_cliente
         UNION ALL
         SELECT nome_fornecedor AS nome
         FROM tb_fornecedor;
-        -- Útil quando se deseja manter contagens exatas de ocorrências
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- INTERSECT (equivalente): nomes presentes em cliente e fornecedor}]
+    Simulamos um \texttt{INTERSECT} utilizando \texttt{EXISTS} para encontrar nomes que figuram tanto como clientes quanto como fornecedores.
+    \begin{lstlisting}[language=SQL,caption={Interseção de nomes (Cliente e Fornecedor)}]
         SELECT c.nome_cliente AS nome
         FROM tb_cliente c
         WHERE EXISTS (
@@ -907,10 +929,10 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
             FROM tb_fornecedor f
             WHERE f.nome_fornecedor = c.nome_cliente
         );
-        -- Equivalente ao INTERSECT dos nomes (quando houver coincidência literal)
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- EXCEPT (equivalente): clientes que nunca compraram}]
+    Simulamos o operador \texttt{EXCEPT} (ou MINUS) para listar clientes que estão cadastrados, mas que nunca realizaram uma compra (Venda).
+    \begin{lstlisting}[language=SQL,caption={Clientes sem compras (Except)}]
         SELECT c.id_cliente, c.nome_cliente
         FROM tb_cliente c
         WHERE NOT EXISTS (
@@ -918,10 +940,10 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
             FROM tb_venda v
             WHERE v.id_cliente = c.id_cliente
         );
-        -- Equivalente ao "clientes" EXCEPT "clientes com venda"
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- UNION: cidades e bairros (rótulo por tipo)}]
+    Por fim, unimos cidades e bairros em uma única coluna para listagem geográfica geral.
+    \begin{lstlisting}[language=SQL,caption={Lista geográfica unificada}]
         SELECT nome_cidade AS nome, 'cidade' AS tipo
         FROM tb_cidade
         UNION
@@ -930,11 +952,10 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
     \end{lstlisting}
 
 
-        \section{Sub-Consultas}
+    \section{Sub-Consultas}
 
-    Subconsultas podem ser escalares (retornam um único valor), de conjunto (\texttt{IN}), correlacionadas (\texttt{EXISTS}/\texttt{NOT EXISTS}) ou em \texttt{FROM} (tabelas derivadas). Abaixo, exemplos aplicados ao schema definido.
-
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Subconsulta escalar: maior salário-base de cargo}]
+    Subconsultas escalares retornam um único valor. Abaixo, buscamos cargos que pagam o teto salarial da empresa (o maior salário base encontrado).
+    \begin{lstlisting}[language=SQL,caption={Cargos com o maior salário base}]
         SELECT nome_cargo, salario_base
         FROM tb_cargo
         WHERE salario_base = (
@@ -942,7 +963,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         );
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- IN: clientes com ao menos uma venda concluída}]
+    Utilizamos \texttt{IN} com subconsulta para obter os dados dos clientes que possuem pelo menos uma venda com status 'concluida'.
+    \begin{lstlisting}[language=SQL,caption={Clientes com vendas concluídas}]
         SELECT c.id_cliente, c.nome_cliente
         FROM tb_cliente c
         WHERE c.id_cliente IN (
@@ -952,7 +974,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         );
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- EXISTS (correlata): fornecedores que já tiveram compras}]
+    A subconsulta correlacionada com \texttt{EXISTS} filtra os fornecedores para exibir apenas aqueles com quem já realizamos compras.
+    \begin{lstlisting}[language=SQL,caption={Fornecedores ativos em compras}]
         SELECT f.id_fornecedor, f.nome_fornecedor
         FROM tb_fornecedor f
         WHERE EXISTS (
@@ -962,7 +985,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         );
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Subconsulta correlata com agregação: vendas com total > 1000}]
+    Podemos filtrar vendas com base em um cálculo agregado na subconsulta. Aqui, buscamos vendas cujo valor total exceda R\$ 1.000,00.
+    \begin{lstlisting}[language=SQL,caption={Vendas de alto valor (Correlacionada)}]
         SELECT v.id_venda, v.data, v.status
         FROM tb_venda v
         WHERE (
@@ -972,7 +996,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         ) > 1000.00;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Tabela derivada (FROM): top categorias por itens vendidos}]
+    Utilizando uma tabela derivada (subconsulta no \texttt{FROM}), calculamos as 5 categorias com maior volume de itens vendidos.
+    \begin{lstlisting}[language=SQL,caption={Top 5 Categorias por volume de vendas}]
         SELECT d.id_categoria, d.nome_categoria, d.qtd_itens
         FROM (
             SELECT pr.id_categoria,
@@ -988,7 +1013,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
         LIMIT 5;
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- NOT EXISTS (correlata): produtos que requerem montagem e nunca foram vendidos}]
+    Com \texttt{NOT EXISTS}, identificamos produtos que exigem montagem mas que, curiosamente, nunca foram vendidos (não constam em itens de venda).
+    \begin{lstlisting}[language=SQL,caption={Produtos com montagem sem saída}]
         SELECT p.id_produto, p.nome_produto
         FROM tb_produto p
         WHERE p.requer_montagem = 1
@@ -1000,7 +1026,8 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
           );
     \end{lstlisting}
 
-    \begin{lstlisting}[language=SQL,caption={SELECT -- Subconsulta escalar em projeção: total (R\$) por venda}]
+    Subconsultas na projeção (dentro do \texttt{SELECT}) permitem trazer dados agregados linha a linha. Abaixo, trazemos o total de cada venda junto aos seus dados.
+    \begin{lstlisting}[language=SQL,caption={Total calculado na projeção}]
         SELECT v.id_venda,
                v.status,
                (
@@ -1012,74 +1039,75 @@ As seções abaixo listam os tipos de consultas (exemplos a completar).
     \end{lstlisting}
 
 
-\section{Agregação e Funções de Agrupamento}
-	Funções de agregação como \texttt{COUNT}, \texttt{SUM}, \texttt{AVG}, \texttt{MAX} e \texttt{MIN} são usadas para resumir dados.
-	O \texttt{GROUP BY} agrupa linhas para que a função de agregação seja aplicada a cada grupo, e o \texttt{HAVING} filtra os grupos.
+    \section{Agregação e Funções de Agrupamento}
 
-	\begin{lstlisting}[language=SQL,caption={SELECT -- GROUP BY + COUNT: Contagem de funcionários por cargo}]
-		SELECT
-			   c.nome_cargo,
-			   COUNT(f.id_funcionario) AS total_funcionarios
-		FROM tb_funcionario f
-		INNER JOIN tb_cargo c ON f.id_cargo = c.id_cargo
-		GROUP BY c.id_cargo, c.nome_cargo;
-	\end{lstlisting}
+    Para relatórios gerenciais, contamos quantos funcionários existem em cada cargo utilizando \texttt{GROUP BY}.
+    \begin{lstlisting}[language=SQL,caption={Contagem de funcionários por cargo}]
+        SELECT
+               c.nome_cargo,
+               COUNT(f.id_funcionario) AS total_funcionarios
+        FROM tb_funcionario f
+        INNER JOIN tb_cargo c ON f.id_cargo = c.id_cargo
+        GROUP BY c.id_cargo, c.nome_cargo;
+    \end{lstlisting}
 
-	\begin{lstlisting}[language=SQL,caption={SELECT -- GROUP BY + SUM: Valor total em estoque por produto}]
-		SELECT
-			   p.nome_produto,
-			   SUM(e.quantidade * e.preco_estoque) AS valor_total_estoque
-		FROM tb_estoque e
-		INNER JOIN tb_produto p ON e.id_produto = p.id_produto
-		GROUP BY p.id_produto, p.nome_produto;
-	\end{lstlisting}
+    Calculamos o valor financeiro imobilizado em estoque, agrupado por produto.
+    \begin{lstlisting}[language=SQL,caption={Valor total em estoque por produto}]
+        SELECT
+               p.nome_produto,
+               SUM(e.quantidade * e.preco_estoque) AS valor_total_estoque
+        FROM tb_estoque e
+        INNER JOIN tb_produto p ON e.id_produto = p.id_produto
+        GROUP BY p.id_produto, p.nome_produto;
+    \end{lstlisting}
 
-	\begin{lstlisting}[language=SQL,caption={SELECT -- GROUP BY + HAVING: Clientes com total gasto \textgreater{} R\$ 1000}]
-		SELECT
-			   c.nome_cliente,
-			   SUM(pv.quantidade * pv.valor) AS total_gasto
-		FROM tb_cliente c
-		JOIN tb_venda v ON c.id_cliente = v.id_cliente
-		JOIN tb_produto_venda pv ON v.id_venda = pv.id_venda
-		GROUP BY c.id_cliente, c.nome_cliente
-		HAVING total_gasto > 1000.00;
-	\end{lstlisting}
+    Utilizamos a cláusula \texttt{HAVING} para filtrar grupos após a agregação. Aqui, listamos apenas clientes que gastaram mais de R\$ 1.000,00 no total.
+    \begin{lstlisting}[language=SQL,caption={Clientes VIP (Gasto > 1000)}]
+        SELECT
+               c.nome_cliente,
+               SUM(pv.quantidade * pv.valor) AS total_gasto
+        FROM tb_cliente c
+        JOIN tb_venda v ON c.id_cliente = v.id_cliente
+        JOIN tb_produto_venda pv ON v.id_venda = pv.id_venda
+        GROUP BY c.id_cliente, c.nome_cliente
+        HAVING total_gasto > 1000.00;
+    \end{lstlisting}
 
 
-\section{\texttt{SELECT} nos Comandos}
-	A instrução \texttt{SELECT} pode ser aninhada dentro de comandos de Data Manipulation Language (DML)
-	-- \texttt{INSERT}, \texttt{UPDATE} e \texttt{DELETE} -- para fornecer valores ou critérios de forma dinâmica.
+    \section{\texttt{SELECT} nos Comandos DML}
 
-	\begin{lstlisting}[language=SQL,caption={INSERT ... SELECT -- Conceder bônus (receita extra) para todos os Vendedores}]
+    É possível utilizar o resultado de um \texttt{SELECT} para alimentar um comando \texttt{INSERT}. Abaixo, criamos uma receita extra de bônus automaticamente para todos os vendedores.
+    \begin{lstlisting}[language=SQL,caption={Inserção em massa (Bônus para Vendedores)}]
+        INSERT INTO tb_receita_extra (descricao_receita, valor, data_recebimento, id_funcionario)
+        SELECT
+            'Bônus de desempenho geral',
+            25.00,
+            CURDATE(),
+            id_funcionario
+        FROM tb_funcionario
+        WHERE id_cargo = 1;
+    \end{lstlisting}
 
-		INSERT INTO tb_receita_extra (descricao_receita, valor, data_recebimento, id_funcionario)
-		SELECT
-			'Bônus de desempenho geral',
-			25.00,
-			CURDATE(),
-			id_funcionario
-		FROM tb_funcionario
-		WHERE id_cargo = 1;
-	\end{lstlisting}
+    Podemos atualizar registros com base em uma subconsulta. O comando a seguir cancela todas as vendas da cliente 'Gabriela Barros'.
+    \begin{lstlisting}[language=SQL,caption={Update com Subconsulta}]
+        UPDATE tb_venda
+        SET status = 'cancelada'
+        WHERE id_cliente = (
+            SELECT id_cliente
+            FROM tb_cliente
+            WHERE nome_cliente = 'Gabriela Barros'
+        );
+    \end{lstlisting}
 
-	\begin{lstlisting}[language=SQL,caption={UPDATE -- Cancelar todas as vendas de um cliente específico}]
-		UPDATE tb_venda
-		SET status = 'cancelada'
-		WHERE id_cliente = (
-			SELECT id_cliente
-			FROM tb_cliente
-			WHERE nome_cliente = 'Gabriela Barros'
-		);
-	\end{lstlisting}
-
-	\begin{lstlisting}[language=SQL,caption={DELETE -- Remover todos os pagamentos associados a vendas canceladas}]
-		DELETE FROM tb_pagamento_cliente
-		WHERE id_venda IN (
-			SELECT id_venda
-			FROM tb_venda
-			WHERE status = 'cancelada'
-		);
-	\end{lstlisting}
+    Da mesma forma, podemos deletar registros dependentes. O comando abaixo remove pagamentos vinculados a vendas que foram canceladas.
+    \begin{lstlisting}[language=SQL,caption={Delete com Subconsulta}]
+        DELETE FROM tb_pagamento_cliente
+        WHERE id_venda IN (
+            SELECT id_venda
+            FROM tb_venda
+            WHERE status = 'cancelada'
+        );
+    \end{lstlisting}
 
 \chapter{ROTINAS DE OTIMIZAÇÃO NO BD}\label{chap:otimizacao}
     \section{Visões}
