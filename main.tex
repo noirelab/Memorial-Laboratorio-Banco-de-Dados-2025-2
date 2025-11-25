@@ -1111,10 +1111,43 @@ ACID\hspace{1cm}Atomicidade, Consistência, Isolamento e Durabilidade
 
 \chapter{ROTINAS DE OTIMIZAÇÃO NO BD}\label{chap:otimizacao}
     \section{Visões}
-    \dots
-
+    Visões são tabelas virtuais que não existem fisicamente, é visível para o usuário e apenas a sua definição é armazenada. Elas são utilizadas para evitar problemas relacionados a segurança e facilidade na consulta, permitindo que o acesso seja confidencial, simples e sem alterar a estrutura do banco de dados original. Exemplos de possíveis utilizações das visões:
+    \begin{lstlisting}[language=SQL,caption={VIEW -- venda por funcionário }]
+    	CREATE VIEW vw_vendaFuncionario
+    	AS SELECT id_venda, tb_venda.id_funcionario, nome_funcionario, data, status
+    	FROM tb_venda
+    	JOIN tb_funcionario ON tb_funcionario.id_funcionario = tb_venda.id_funcionario;
+    	);
+    \end{lstlisting}
+    
+    \begin{lstlisting}[language=SQL,caption={VIEW -- View para produto e sua categoria }]
+    	CREATE VIEW vw_produtoCategoria(nome, descricao, requer_montagem, categoria)
+    	AS (SELECT nome_produto, descricao_produto, requer_montagem, tb_produto.id_categoria
+    	FROM tb_produto
+    	JOIN tb_categoria ON tb_categoria.id_categoria = tb_produto.id_categoria);
+    \end{lstlisting}
+    
     \section{Funções}
-    \dots
+    Uma função é um procedimento armazenado dentro do servidor que é executada sempre que chamada. Ela deve retornar um valor de retorno e é utilizada para fazer parte de uma expressão ou parâmetro. Com uma função, não é possível alterar o estado atual do banco de dados. Essa função pode ser chamada tanto por um procedimento quanto para um SELECT. Exemplos de possíveis usos de funções:
+    \begin{lstlisting}[language=SQL,caption={FUNCTION -- Retorna o faturamento com vendas no mês}]
+    	DELIMITER //
+    	create function VENDA_NO_MES(mes int, ano int)
+    	returns decimal(10,2)
+    	begin
+    	declare valor_total decimal(10,2);
+    	
+    	select sum(valor) into valor_total
+    	from tb_produto_venda
+    	inner join tb_venda on tb_venda.id_venda = tb_produto_venda.id_venda
+    	where month(tb_venda.data) = mes
+    	and year(tb_venda.data) = ano;
+    	
+    	return IFNULL(valor_total, 0.00);
+    	
+    	end; //
+    	);
+    \end{lstlisting}
+    
 
     \section{Procedimentos}
     Procedimentos Armazenados (\textit{Stored Procedures}) são conjuntos de comandos SQL pré-compilados e armazenados no servidor de banco de dados. Eles permitem encapsular lógica de negócios, reutilizar código, melhorar a segurança e, em muitos casos, aumentar o desempenho ao reduzir o tráfego de rede.
